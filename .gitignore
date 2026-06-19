@@ -33,3 +33,6 @@ coverage/
 
 # Docker volumes (if mounted locally)
 data/
+
+# Local course assignment description (keep only local)
+project_discription.md
