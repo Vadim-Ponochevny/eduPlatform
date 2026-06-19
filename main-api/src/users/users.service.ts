@@ -18,4 +18,12 @@ export class UsersService {
   async findById(id: string): Promise<UserDocument | null> {
     return this.userModel.findById(id);
   }
+
+  async enrollToCourse(userId: string, courseId: string) {
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      { $addToSet: { enrolledCourses: courseId } },
+      { new: true },
+    );
+  }
 }
