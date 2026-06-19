@@ -1,5 +1,4 @@
 services:
-  # База данных — хранит пользователей, курсы, уроки
   mongodb:
     image: mongo:4.4
     container_name: edu-mongodb
@@ -9,7 +8,6 @@ services:
       - mongo_data:/data/db
     restart: unless-stopped
 
-  # Кэш — ускоряет GET /courses и GET /courses/:id
   redis:
     image: redis:7-alpine
     container_name: edu-redis
@@ -18,8 +16,7 @@ services:
     volumes:
       - redis_data:/data
     restart: unless-stopped
-
-  # Kafka нужен Zookeeper для координации (в новых версиях Kafka без него, но для учебного проекта — как в ТЗ)
+    
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.1
     container_name: edu-zookeeper
@@ -28,7 +25,6 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     restart: unless-stopped
 
-  # Очередь сообщений — Main API шлёт задачи, Image Worker их забирает
   kafka:
     image: confluentinc/cp-kafka:7.6.1
     container_name: edu-kafka
