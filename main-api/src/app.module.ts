@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CoursesModule } from './courses/courses.module';
 import { LessonsModule } from './lessons/lessons.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -21,6 +22,8 @@ import { LessonsModule } from './lessons/lessons.module';
         uri: configService.get<string>('MONGO_URI'),
       }),
     }),
+
+    RedisModule,
     
     UsersModule,
     
