@@ -2,16 +2,22 @@ import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 
+const REDIS_URL_ENV = 'REDIS_URL';
+const DEFAULT_TTL_SECONDS = 60;
+const EXPIRE_MODE = 'EX';
+const MASKED_URL = '://***:***@';
+const MASK_REGEX = /:\/\/[^:]+:([^@]+)@/;
+
 @Injectable()
 export class RedisService implements OnModuleDestroy {
   private readonly client: Redis;
   private readonly logger = new Logger(RedisService.name);
 
   constructor(private readonly configService: ConfigService) {
-    const redisUrl = this.configService.get<string>('REDIS_URL');
+    const redisUrl = this.configService.get<string>(REDIS_URL_ENV);
     if (!redisUrl) {
-      this.logger.error('REDIS_URL environment variable is not set');
-      throw new Error('REDIS_URL is required');
+      this.logger.error(`${REDIS_URL_ENV} environment variable is not set`);
+      throw new Error(`${REDIS_URL_ENV} is required`);
     }
 
     this.client = new Redis(redisUrl);
@@ -34,15 +40,18 @@ export class RedisService implements OnModuleDestroy {
         `Failed to get key "${key}": ${error.message}`,
         error.stack,
       );
-
       return null;
     }
   }
 
-  async set(key: string, value: unknown, ttlSeconds = 60): Promise<void> {
+  async set(
+    key: string,
+    value: unknown,
+    ttlSeconds: number = DEFAULT_TTL_SECONDS,
+  ): Promise<void> {
     try {
       const serialized = JSON.stringify(value);
-      await this.client.set(key, serialized, 'EX', ttlSeconds);
+      await this.client.set(key, serialized, EXPIRE_MODE, ttlSeconds);
     } catch (error) {
       this.logger.error(
         `Failed to set key "${key}": ${error.message}`,
@@ -76,7 +85,7 @@ export class RedisService implements OnModuleDestroy {
   }
 
   private maskUrl(url: string): string {
-    return url.replace(/:\/\/[^:]+:([^@]+)@/, '://***:***@');
+    return url.replace(MASK_REGEX, MASKED_URL);
   }
 
   onModuleDestroy() {

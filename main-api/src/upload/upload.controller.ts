@@ -23,6 +23,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UserRole } from '../users/schemas/user.schema';
+import { join } from 'path';
   
 @ApiTags('upload')
 @Controller()
@@ -78,7 +79,8 @@ export class UploadController {
     @Param('filename') filename: string,
     @Res() res: Response,
   ) {
-    const filePath = this.uploadService.getProcessedImagePath(filename);
-    return res.sendFile(filePath);
+    return res.sendFile(filename, {
+      root: join(process.cwd(), 'uploads', 'processed'),
+    });
   }
 }

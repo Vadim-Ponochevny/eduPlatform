@@ -7,6 +7,8 @@ import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
+const JWT_EXPIRES_IN = '7d';
+
 @Module({
   imports: [
     UsersModule,
@@ -16,7 +18,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '7d' },
+        signOptions: { expiresIn: JWT_EXPIRES_IN },
       }),
     }),
   ],
