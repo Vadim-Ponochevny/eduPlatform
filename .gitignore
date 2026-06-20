@@ -33,3 +33,5 @@ coverage/
 
 # Docker volumes (if mounted locally)
 data/
+
+project_discription.md
