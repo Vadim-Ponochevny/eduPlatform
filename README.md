@@ -65,7 +65,7 @@ docker compose ps
 
 ```bash
 cd main-api
-cp .env.example .env   # или создай .env вручную
+cp .env.example .env   # или создать .env вручную
 npm install
 npm run start:dev
 ```
@@ -104,15 +104,13 @@ PROCESSED_DIR=../main-api/uploads/processed
 WORKER_PORT=3001
 ```
 
-> **Важно:** Worker должен быть запущен **до** загрузки новых изображений (consumer читает только новые сообщения Kafka).
-
 ## Тестирование (Swagger)
 
 ### Auth
 
 1. `POST /auth/register` — создать teacher и student (`role`: `teacher` / `student`)
 2. `POST /auth/login` — получить `access_token`
-3. Нажать **Authorize** → вставить токен
+3. Нажать **Authorize** и вставить токен
 
 ### Курсы и уроки
 
@@ -130,7 +128,7 @@ WORKER_PORT=3001
 1. Teacher: `POST /courses/{id}/cover` — выбрать файл (поле `file`)
 2. Ответ: `{ "url": "....jpg", "status": "processing" }`
 3. В терминале Worker: `Received task` → `Processed: ...`
-4. `GET /courses/{id}` → `coverImage.status = "ready"`
+4. `GET /courses/{id}` получаем `coverImage.status = "ready"`
 5. `GET /images/{filename}` — отдать обработанную картинку (имя из `coverImage.url`)
 
 Аналогично для урока: `POST /lessons/{id}/image`
@@ -145,14 +143,14 @@ docker exec -it edu-redis redis-cli KEYS "courses:*"
 - После `GET /courses/{id}` — `courses:{id}`
 - После `PATCH` курса или изменения урока ключи удаляются
 
-### Kafka (опционально)
+### Kafka
 
 ```bash
 docker exec -it edu-kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic image.uploaded --from-beginning
 docker exec -it edu-kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic image.processed --from-beginning
 ```
 
-## API-эндпоинты (кратко)
+## API-эндпоинты 
 
 | Метод | Путь | Описание |
 |-------|------|----------|
